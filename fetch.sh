@@ -24,7 +24,9 @@ getJSON()
 		let nb_private_users++
 		echo -e "${username}" >> "private_users.txt";
 	elif [[ ${from_postID} =~ $regex || "${from_postID}" = "null" ]]; then 
+		if [ ${from_number} -eq "100" ]; then 
 		echo -e "${username}" >> "public_users.txt"
+		fi
 		if [ "${METHOD}" = "check" ]; then
 			from_postID="null"
 		else
