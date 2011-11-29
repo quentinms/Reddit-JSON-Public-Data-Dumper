@@ -6,7 +6,9 @@ If there is more than 100 liked, it sends another request to get the following 1
 
 ####Use:
 chmod u+x fetch.sh  
-./fetch.sh userlist.txt 
+./fetch.sh userlist.txt [check]
+
+The optional check argument will result in outputting only a text file of public users and a text file of private users and no .json files.
 
 ####Todo:
 Handle dislikes also.
