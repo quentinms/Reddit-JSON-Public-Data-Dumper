@@ -15,20 +15,25 @@ getJSON()
 	#get the id of the next post.
 	from_postID=`echo ${data} | sed -E 's/.*\"after\":.\"?([^\".]*)\"?,.*/\1/'`
 	
+	regex='t3_.*'
+	
 	#In case of 404...
 	if [ "${from_postID}" = "{error: 404}" ]; then
 		from_postID="null"
 		from_number=0
 		let nb_private_users++
 		echo -e "${username}" >> "private_users.txt";
-	else 
-		let nb_public_users++
-		echo -e "${username}" >> "public_users.txt";
+	elif [[ ${from_postID} =~ $regex || "${from_postID}" = "null" ]]; then 
+		echo -e "${username}" >> "public_users.txt"
 		if [ "${METHOD}" = "check" ]; then
 			from_postID="null"
 		else
 			echo ${data} > "$PWD/json/TEST-${LINE}-${from_number}.json";
 		fi	
+	else 
+		echo -e "${username}" >> "error_users.txt"
+		echo "error on user ${username}: \n ${from_postID}"
+		${from_postID}="null";
 	fi
 }
 
@@ -52,8 +57,6 @@ if [ "${METHOD}" = "check" ]; then
 fi
 
 nb_private_users=0
-nb_public_users=0
-
 
 while read LINE
 do
@@ -67,10 +70,11 @@ do
     getJSON
     sleep '2' #In order not to 'kill reddit'
     done
+    nb_public_users=`expr ${nb_of_users} - ${nb_private_users}`
     echo -e "${nb_of_users}. Fetched <= ${from_number} posts from user ${username}."
 done < "${FILENAME}"
 
-echo -e "\nTotal $nb_of_users users fetched. (${nb_public_users} public and ${nb_private_users} private users"
+echo -e "\nTotal $nb_of_users users fetched. (${nb_public_users} public and ${nb_private_users} private users)"
 
 
 
