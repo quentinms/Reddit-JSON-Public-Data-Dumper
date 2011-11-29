@@ -47,6 +47,12 @@ else
 	echo "Use: ./fetch.sh filename [check]"
 	exit -1
 fi
+
+
+if [ ! -d "json" ]; then
+    mkdir "json"
+    echo "created a folder named json"
+fi
 	
 nb_of_users=0
 #MAX_POSTS=300 Most users does not even have 100 posts...
