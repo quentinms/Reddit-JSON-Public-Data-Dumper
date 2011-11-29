@@ -32,8 +32,8 @@ getJSON()
 		fi	
 	else 
 		echo -e "${username}" >> "error_users.txt"
-		echo "error on user ${username}: \n ${from_postID}"
-		${from_postID}="null";
+		echo -e "error on user ${username}: \n ${from_postID}"
+		from_postID="null";
 	fi
 }
 
