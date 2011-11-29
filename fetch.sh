@@ -24,15 +24,18 @@ getJSON()
 		let nb_private_users++
 		echo -e "${username}" >> "private_users.txt";
 	elif [[ ${from_postID} =~ $regex || "${from_postID}" = "null" ]]; then 
-		if [ ${from_number} -eq "100" ]; then 
+		#add to the file only the first time
+		if [ ${from_number} -eq ${NB_POSTS} ]; then 
 		echo -e "${username}" >> "public_users.txt"
 		fi
+		#if we only check, we don't want it to continue and we don't want to write in a file.
 		if [ "${METHOD}" = "check" ]; then
 			from_postID="null"
 		else
 			echo ${data} > "$PWD/json/TEST-${LINE}-${from_number}.json";
 		fi	
 	else 
+		#There's another error...
 		echo -e "${username}" >> "error_users.txt"
 		echo -e "error on user ${username}: \n ${from_postID}"
 		from_postID="null";
@@ -40,6 +43,7 @@ getJSON()
 }
 
 METHOD=""
+#check console arguments
 if [ "$#" -gt "0" ]; then
 	FILENAME=${1}
 	if [ "$#" -eq "2" ]; then
@@ -57,9 +61,9 @@ if [ ! -d "json" ]; then
 fi
 	
 nb_of_users=0
-#MAX_POSTS=300 Most users does not even have 100 posts...
 NB_POSTS=100 # Max that can be return by reddit API
 
+#No need to get 100 if it's only to check if user is public.
 if [ "${METHOD}" = "check" ]; then
 	NB_POSTS=1;
 fi
@@ -73,6 +77,7 @@ do
 	from_number=0
     let nb_of_users++
     
+    #While there are other posts to get.
     while [[ "${from_postID}" != "null" ]]
     do
     getJSON
