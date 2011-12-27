@@ -4,6 +4,8 @@ It's a simple bash script that downloads the .json of liked from every public us
 
 If there is more than 100 liked, it sends another request to get the following 100 likes.
 
+>> Now in Python! \o/ <<
+
 ####Use:
 chmod u+x fetch.sh  
 ./fetch.sh userlist.txt [check]
