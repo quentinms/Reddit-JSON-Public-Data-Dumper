@@ -41,12 +41,15 @@ def fetch_all(username, category):
 		author = post['data']['author']
 		date = post['data']['created_utc']
             	# We have to make sure the thumbnail_url field exists.
-		if(thumbnail == "" and post['data']['media'] != None and 'oembed' in post['data']['media']):
+		if(thumbnail == "" and post['data']['media'] != None and 'oembed' in post['data']['media'] and 'thumbnail_url' in post['data']['media']['oembed']):
 			thumbnail = post['data']['media']['oembed']['thumbnail_url']
        	    	if(not thumbnail.startswith("http")): thumbnail = "None"
 	    	# TODO: Handle ", ', e acute, e grave, etc. in titles (and other fields?).
-		toWrite = str(id)+"\t"+subreddit+"\t"+url+"\t"+author+"\t"+str(date)+"\t"+"title"+"\t"+thumbnail+"\n"
-		outputFile.write(toWrite)
+		toWrite = str(id)+"\t"+subreddit+"\t"+url+"\t"+author+"\t"+str(date)+"\t"+title+"\t"+thumbnail+"\n"
+		try:
+			outputFile.write(toWrite)
+		except:
+			print("Error with:"+toWrite)
 	
         if (next == None):
 		outputFile.close()
