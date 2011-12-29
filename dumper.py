@@ -45,16 +45,18 @@ def fetch_all(username, category):
 			thumbnail = post['data']['media']['oembed']['thumbnail_url']
        	    	if(not thumbnail.startswith("http")): thumbnail = "None"
 	    	# TODO: Handle ", ', e acute, e grave, etc. in titles (and other fields?).
-		toWrite = str(id)+"\t"+subreddit+"\t"+url+"\t"+author+"\t"+str(date)+"\t"+title+"\t"+thumbnail+"\n"
+		toWrite = str(id)+"\t"+subreddit+"\t"+url+"\t"+author+"\t"+str(date)+"\t"+"title"+"\t"+thumbnail+"\n"
 		try:
 			outputFile.write(toWrite)
 		except:
 			print("Error with:"+toWrite)
 	
-        if (next == None):
-		outputFile.close()
-		break
+	        if (next == None):
+			outputFile.close()
+			print("Done: "+username+" "+category)
+			break
  	# reddit API rules demands this
+	#print("Done: "+username+" "+category+" "+str(next))
         sleep((2000-(time.time()-start_time))/1000)
 
 for line in open('userlist.txt'):
@@ -63,8 +65,8 @@ for line in open('userlist.txt'):
 	username = line.rstrip('\r\n')
    	try:
         	fetch_all(username, 'liked')
-        	fetch_all(username, 'disliked')
-        	fetch_all(username, 'hidden')
+        	#fetch_all(username, 'disliked')
+        	#<D-3>fetch_all(username, 'hidden')
     	except HTTPError as e:
         	# TODO: Handle errors more intelligent
         	# Currently skips username entirely if server returns error
