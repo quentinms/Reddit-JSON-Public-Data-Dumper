@@ -21,14 +21,14 @@ def fetch(username, category, fullname):
     
         
         
-def fetch_all(username, category):
+def fetch_all(username, category, most_recent_post):
     next_post = None
     filename = username + "-" + category + ".redditdata"
     output_directory = "output/" 
     if not os.path.exists(output_directory):
         os.makedirs(output_directory)
     outputFile = open(output_directory + filename, 'w')
-
+    is_first_time=True
     while True:
         page = fetch(username, category, next_post)
         start_time = time.time()
@@ -40,6 +40,15 @@ def fetch_all(username, category):
         for post in page['data']['children']:
             subreddit = post['data']['subreddit']
             post_id = post['data']['id']
+            #If we already fetched this post, we should stop
+            if(post_id == most_recent_post):
+                # TODO see how we should quit
+                print('Already imported this!')
+                break
+            #We store the most recent post (i.e. first link of the first json retrieved)
+            if(is_first_time):
+                most_recent_post=post_id
+                is_first_time=False
             title = post['data']['title']
             thumbnail = post['data']['thumbnail']
             url = post['data']['url']
@@ -55,6 +64,8 @@ def fetch_all(username, category):
                 outputFile.write(toWrite)
             except:
                 print("Error with:" + toWrite)
+            #TODO write the most recent post some where
+                toWrite = username+","+most_recent_post
 
         # reddit API rules demands 2 sec wait between each request.
         sleep((2000 - (time.time() - start_time)) / 1000)
@@ -67,11 +78,14 @@ def fetch_all(username, category):
 for line in open('userlist.txt'):
     # Unlike other programming languages, reading a line in python also
     # includes the newline character. So we need to remove it.
+    
+    # TODO Read also the most recent post
     username = line.rstrip('\r\n')
+    most_recent_post=None
     try:
-        fetch_all(username, 'liked')
-        fetch_all(username, 'disliked')
-        fetch_all(username, 'hidden')
+        fetch_all(username, 'liked', most_recent_post)
+        fetch_all(username, 'disliked', most_recent_post)
+        fetch_all(username, 'hidden', most_recent_post)
     except HTTPError as e:
         # TODO: Handle errors more intelligent
         # Currently skips username entirely if server returns error
