@@ -7,6 +7,7 @@
 import json
 import time
 import os
+import sys
 from time import sleep
 from urllib2 import urlopen
 from urllib2 import HTTPError
@@ -17,7 +18,9 @@ def fetch(username, category, fullname):
     url = 'http://www.reddit.com/user/%s/%s/' % (username, category)
     url = '%s.json?limit=%s&after=%s' % (url, limit, fullname)
     return json.load(urlopen(url))
-
+    
+        
+        
 def fetch_all(username, category):
     next_post = None
     filename = username + "-" + category + ".redditdata"
@@ -73,5 +76,11 @@ for line in open('userlist.txt'):
         # TODO: Handle errors more intelligent
         # Currently skips username entirely if server returns error
         print('Server responded with %d. Skipping %s.' % (e.code, username))
+        error_file=open('error_users.txt','a')
+        error_file.write(username+'\n')
+        error_file.close()
+        continue
+    except:
+        print('Unexpected error: %s with %s' % (sys.exc_info()[0],username) )
         continue
 
