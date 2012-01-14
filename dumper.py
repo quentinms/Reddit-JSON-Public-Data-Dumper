@@ -11,6 +11,7 @@ import sys
 from string import split
 from time import sleep
 from urllib2 import urlopen
+from urllib2 import Request
 from urllib2 import HTTPError
 
 
@@ -18,6 +19,8 @@ def fetch(username, category, fullname):
     limit = 100
     url = 'http://www.reddit.com/user/%s/%s/' % (username, category)
     url = '%s.json?limit=%s&after=%s' % (url, limit, fullname)
+    #TODO change user-agent
+    #req = Request(url, {'User-agent': 'Reddit Post Recommender'})
     return json.load(urlopen(url))
     
         
@@ -80,7 +83,7 @@ def fetch_all(username, category, most_recent_post):
             output_username_file.close()
             break
         
-if((not sys.argv[1] == 'loop') or len(sys.argv) == 1):
+if(len(sys.argv) == 1 or (not sys.argv[1] == 'loop')):
     for line in open('userlist.txt'):
         # Unlike other programming languages, reading a line in python also
         # includes the newline character. So we need to remove it.
