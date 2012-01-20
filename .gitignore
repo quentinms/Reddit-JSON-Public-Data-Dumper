@@ -3,3 +3,6 @@
 output/
 *.swp
 .*
+*.csv
+*.txt
+*.log

@@ -68,12 +68,16 @@ def fetch_all(username, category, most_recent_post):
                 thumbnail = post['data']['media']['oembed']['thumbnail_url']
             # If it does not begin with http, it's one of reddit default's thumbnails, thus not really interesting.
             if(not thumbnail.startswith("http")): thumbnail = "None"
-       
-            toWrite = str(post_id) + "\t" + subreddit + "\t" + url + "\t" + author + "\t" + str(date) + "\t" + title + "\t" + thumbnail + "\n"
+            
+            if(category == 'hidden'): category_nb = 0
+            elif(category == 'liked'): category_nb = 1
+            elif(category == 'disliked'): category_nb = -1
+            
+            toWrite = username + "\t" + str(category_nb)+"\t" +str(post_id) + "\t" + subreddit + "\t" + url + "\t" + author + "\t" + str(date) + "\t" + title + "\t" + thumbnail + "\n"
             try:
                 outputFile.write(toWrite)
             except:
-                print_error("Print error with:" + toWrite)
+                print_error("Print error with:" + toWrite+"\n")
             
 
         # reddit API rules demands 2 sec wait between each request.
@@ -93,7 +97,7 @@ def fetch_all(username, category, most_recent_post):
 def print_error(to_print):
     sys.stderr.write(to_print)
     error_log = open('errors.log', 'a')
-    error_log.write(str(time.time()) + " - " + to_print + "\n")
+    error_log.write(str(time.time()) + " - " + to_print)
     error_log.close()
     
 #Clean temp files that may be there from a previous run.
@@ -117,7 +121,7 @@ if(len(sys.argv) == 1 or (not sys.argv[1] == 'loop')):
             fetch_all(username, 'disliked', most_recent_post)
             fetch_all(username, 'hidden', most_recent_post)
         except HTTPError as e:
-            print_error('Server responded with %d. Skipping %s.' % (e.code, username))
+            print_error('Server responded with %d. Skipping %s. \n' % (e.code, username))
             if(e.code == 404):
                 error_file = open('private_users.txt', 'a')
                 error_file.write(username + '\n')
@@ -132,14 +136,14 @@ if(len(sys.argv) == 1 or (not sys.argv[1] == 'loop')):
             continue
         except IncompleteRead as e:
             #If the read was incomplete, we will try again later
-            print_error('Incomplete read ' + username)
+            print_error('Incomplete read ' + username+'\n')
             output_username_file = open('userlist.txt', 'a')
             toWrite = username + '\r\n'
             output_username_file.write(toWrite)
             output_username_file.close()
             continue
         except:
-            print_error('Unexpected error: %s with %s' % (sys.exc_info()[0], username))
+            print_error('Unexpected error: %s with %s \n' % (sys.exc_info()[0], username))
             continue
 # That's for continuously getting new posts.       
 else:  
@@ -158,7 +162,7 @@ else:
                 
             except HTTPError as e:
                 
-                print_error('Server responded with %d. Skipping %s.' % (e.code, username))
+                print_error('Server responded with %d. Skipping %s.\n' % (e.code, username))
                 if(e.code == 404):
                     error_file = open('private_users.txt', 'a')
                     error_file.write(username + '\n')
@@ -173,7 +177,7 @@ else:
                 
             except IncompleteRead as e:
                 #If the read was incomplete, we will try again later
-                print_error('Incomplete read ' + username + ' - ' + category)
+                print_error('Incomplete read ' + username + ' - ' + category+'\n')
                 output_username_file = open('temp_userlist.txt', 'a')
                 toWrite = username + ',' + category + ',' + str(most_recent_post) + '\r\n'
                 output_username_file.write(toWrite)
