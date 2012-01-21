@@ -6,3 +6,4 @@ output/
 *.csv
 *.txt
 *.log
+*.pyc

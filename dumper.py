@@ -59,6 +59,11 @@ def fetch_all(username, category, most_recent_post):
                 most_recent_post = post_id
                 is_first_time = False
             title = post['data']['title']
+            #Sometimes, strangely, there is a tab, a return in a title.
+            title=title.replace("\t"," ")
+            title=title.replace("\r\n"," ")
+            title=title.replace("\n"," ")
+            title=title.replace("\r"," ")
             thumbnail = post['data']['thumbnail']
             url = post['data']['url']
             author = post['data']['author']

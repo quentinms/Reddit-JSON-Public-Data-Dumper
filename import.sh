@@ -21,10 +21,17 @@ cut -f 1,3,2 "$item" >> correspondance_table.csv
 
 # Create file to be imported in the "post table" (see in URD)
 # We need post_id, subreddit, url, author, date, title, thumbnail
-cut -f 3,4,5,6,7,8,9 $item >> posts_table.csv
+cut -f 3,4,5,6,7,8,9 "$item" >> posts_table.csv
+
+#rm "$item"
 done
 
 # TODO: Import into postgreSQL database. (see COPY: http://wiki.postgresql.org/wiki/COPY)
+username="postgres"
+psql $username << EOF
+COPY correspondance FROM correspondance_table.csv WITH DELIMITER '\t';
+COPY posts FROM posts_table.csv WITH DELIMITER '\t';
+EOF
 
 #rm posts_table.csv
 #rm correspondance_table.csv
