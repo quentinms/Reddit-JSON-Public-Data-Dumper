@@ -1,5 +1,5 @@
 #!/usr/bin/python
-#coding=utf-8
+#-*- coding: utf-8 -*-
 
 # Joakim Axnér & Quentin Mazars-Simon
 
@@ -10,6 +10,7 @@ import os
 import sys
 from string import split
 from time import sleep
+from urllib2 import build_opener
 from urllib2 import urlopen
 from urllib2 import Request
 from urllib2 import HTTPError
@@ -20,10 +21,10 @@ def fetch(username, category, fullname):
     limit = 100
     url = 'http://www.reddit.com/user/%s/%s/' % (username, category)
     url = '%s.json?limit=%s&after=%s' % (url, limit, fullname)
-    req = Request(url)
-    req.add_header('User-Agent', 'Reddit Post Recommender contact:qms@kth.se')
-    
-    return json.load(urlopen(url))
+    req_headers = {'User-Agent': 'Reddit Post Recommender contact:qms@kth.se'}
+    req = Request(url, headers=req_headers)
+    opener = build_opener()
+    return json.load(opener.open(req))
     
         
         
