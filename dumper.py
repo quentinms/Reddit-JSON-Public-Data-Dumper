@@ -80,8 +80,8 @@ def fetch_all(username, category, most_recent_post):
             elif(category == 'disliked'): category_nb = -1
             
             toWrite = username + "\t" + str(category_nb)+"\t" +str(post_id) + "\t" + subreddit + "\t" + url + "\t" + author + "\t" + str(date) + "\t" + title + "\t" + thumbnail + "\n"
-            try:
-                outputFile.write(toWrite)
+            try: 
+                outputFile.write(toWrite.encode( "utf-8" ))
             except:
                 print_error("Print error with:" + toWrite+"\n")
             
@@ -125,7 +125,7 @@ if(len(sys.argv) == 1 or (not sys.argv[1] == 'loop')):
         try:
             fetch_all(username, 'liked', most_recent_post)
             fetch_all(username, 'disliked', most_recent_post)
-            fetch_all(username, 'hidden', most_recent_post)
+            #fetch_all(username, 'hidden', most_recent_post)
         except HTTPError as e:
             print_error('Server responded with %d. Skipping %s. \n' % (e.code, username))
             if(e.code == 404):
